@@ -14,7 +14,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 app.use('/api/generate', generateRoute);
-app.use('/r', redirectRoute);
+app.use('/', redirectRoute);
+
+
 
 // Start server
 app.listen(PORT, '0.0.0.0', () => {

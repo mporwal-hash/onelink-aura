@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const { nanoid } = require('nanoid');
+const urlMappings = require('./urlMappings'); // Import your mapping
+
 
 router.post('/', (req, res) => {
   const { brand, androidPackage, iosAppStoreId, fallbackUrl } = req.body;
@@ -15,13 +18,17 @@ router.post('/', (req, res) => {
     fallbackUrl: fallbackUrl || 'https://aura.services'
   };
 
-  // encode payload to URL-safe base64
-  const encoded = Buffer.from(JSON.stringify(payload)).toString('base64url');
+  // generate short id
+  const shortId = nanoid(6);
 
-  // generate shortlink path
-  const shortLink = `${req.protocol}://${req.get('host')}/r/${encoded}`;
+  // short URL path: /brand/shortId
+  const shortLink = `${req.protocol}://${req.get('host')}/${brand}/${shortId}`;
+
+  // Save mapping for redirect
+  urlMappings[`${brand}/${shortId}`] = payload;
 
   res.json({ shortLink });
 });
 
+// Export urlMappings for use in redirect.js
 module.exports = router;
