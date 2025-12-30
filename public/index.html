@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>App Short Link Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 480px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f7fa;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #0070f3;
+      outline: none;
+    }
+
+    button {
+      background-color: #0070f3;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #005bb5;
+    }
+
+    #output {
+      font-family: monospace;
+      background-color: #e9ecef;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      width: 100%;
+      resize: none;
+    }
+
+    p {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<h2>App Short Link Generator</h2>
+
+<input id="brand" placeholder="Brand Name" autocomplete="off" />
+<input id="androidPackage" placeholder="Android Package" autocomplete="off" />
+<input id="iosAppStoreId" placeholder="iOS App Store ID" autocomplete="off" />
+<input id="fallbackUrl" placeholder="Fallback URL (optional)" autocomplete="off" />
+
+<button onclick="generate()">Generate Short Link</button>
+
+<p>Generated Link:</p>
+<textarea id="output" rows="2" readonly></textarea>
+
+<script>
+async function generate() {
+  const brand = document.getElementById('brand').value.trim();
+  const androidPackage = document.getElementById('androidPackage').value.trim();
+  const iosAppStoreId = document.getElementById('iosAppStoreId').value.trim();
+  const fallbackUrl = document.getElementById('fallbackUrl').value.trim();
+
+  if (!brand || !androidPackage || !iosAppStoreId) {
+    alert('Please fill in Brand, Android Package, and iOS App Store ID');
+    return;
+  }
+
+  const payload = { brand, androidPackage, iosAppStoreId, fallbackUrl };
+
+  try {
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+    if (data.shortLink) {
+      document.getElementById('output').value = data.shortLink;
+    } else if(data.error) {
+      alert('Error: ' + data.error);
+    } else {
+      alert('Unknown error occurred');
+    }
+  } catch (err) {
+    alert('Network error: ' + err.message);
+  }
+}
+</script>
+
+</body>
+</html>
