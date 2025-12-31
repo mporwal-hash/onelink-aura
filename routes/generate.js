@@ -22,10 +22,10 @@ router.post('/', (req, res) => {
   const shortId = nanoid(6);
 
   // short URL path: /brand/shortId
-  const shortLink = `${req.protocol}://${req.get('host')}/${brand}/${shortId}`;
+  const shortLink = `${req.protocol}://${req.get('host')}/${shortId}`;
 
   // Save mapping for redirect
-  urlMappings[`${brand}/${shortId}`] = payload;
+  urlMappings[shortId] = payload;
 
   res.json({ shortLink });
 });

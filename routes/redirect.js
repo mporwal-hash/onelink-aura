@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const urlMappings = require('./urlMappings');
 
-router.get('/:brand/:shortId', (req, res) => {
+router.get('/:shortId', (req, res) => {
   console.log('Redirect request for:', req.params);
-  const key = `${req.params.brand}/${req.params.shortId}`;
+  const key = req.params.shortId;
   const payload = urlMappings[key];
 
   if (!payload) {
